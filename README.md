@@ -1,4 +1,4 @@
-# Pomodoro timer created using React.js and React hooks.
+# Pomodoro timer developed using React.js and React hooks.
 
 Font, color and timer switchers are already funcional.
 Countdown still in progress.
