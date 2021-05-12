@@ -1,0 +1,309 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 25px;
+  @include dflex(center, center);
+  background-color: rgba(#0a0c1c, 0.5);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--font);
+
+  &.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  &_inner {
+    position: relative;
+    width: 100%;
+    max-width: 540px;
+    background-color: $white;
+    border-radius: 25px;
+  }
+
+  &_header {
+    @include dflex(space-between, center);
+    padding: 34px 40px 31px;
+    border-bottom: 1px solid $lightGray;
+
+    svg {
+      cursor: pointer;
+
+      &:hover {
+        fill: $marine;
+      }
+    }
+  }
+
+  &_body {
+    padding: 0 40px 60px;
+  }
+
+  &_section {
+    padding: 25px 0;
+    border-bottom: 1px solid $lightGray;
+    @include dflex(space-between, center);
+  }
+
+  &__content {
+    @include dflex(space-between, center);
+    gap: 16px;
+    list-style: none;
+
+    &.full_line {
+      width: 100%;
+      padding-top: 20px;
+    }
+
+    .list_font {
+      position: relative;
+      @include dflex(center, center);
+      background-color: $softWhite;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: rgba($marine, 0.7);
+
+      & ~ input:checked {
+        background-color: $marine;
+        color: $white;
+      }
+
+      // input {
+      //   position: absolute;
+      //   top: 0;
+      //   width: 40px;
+      //   height: 40px;
+      //   opacity: 0.5;
+      // }
+
+      label {
+        color: inherit;
+        font-size: 15px;
+        line-height: 15px;
+        font-weight: bold;
+      }
+      &:first-child {
+        font-family: $kumbh;
+      }
+      &:nth-child(2) {
+        font-family: $roboto;
+        font-weight: 400;
+      }
+      &:last-child {
+        font-family: $space;
+      }
+
+      &:hover {
+        background-color: $lightGray;
+        opacity: 1;
+      }
+
+      // &.active {
+      //   background-color: $marine;
+      //   color: $white;
+      // }
+    }
+    .list_color {
+      position: relative;
+      background-color: $softWhite;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+
+      &:first-child {
+        background-color: $red;
+      }
+      &:nth-child(2) {
+        background-color: $magenta;
+      }
+      &:last-child {
+        background-color: $purple;
+      }
+
+      &.active::before {
+        position: absolute;
+        content: "";
+        top: 45%;
+        left: 50%;
+        width: 12px;
+        height: 8px;
+        border-bottom: 2px solid $marine;
+        border-left: 2px solid $marine;
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+    }
+
+    .list_timer {
+      flex: 1;
+
+      small {
+        display: block;
+        color: $marine;
+        opacity: 0.4;
+        margin-bottom: 8px;
+
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+      }
+    }
+  }
+
+  &__btn {
+    position: absolute;
+    left: 50%;
+    bottom: -25px;
+    transform: translateX(-50%);
+  }
+
+  .content_time {
+    @include dflex(space-between, center);
+    padding: 15px;
+    background-color: $softWhite;
+    border-radius: 10px;
+
+    &__number {
+      color: $marine;
+      @extend .text_accent;
+      width: 50px;
+      padding: 5px 5px 5px 0;
+      border: none;
+      background: transparent;
+
+      -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+      -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+      -ms-user-select: none; /* Internet Explorer/Edge */
+      user-select: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &__arrows {
+      @include dflex(center, center, column);
+
+      svg {
+        margin: 4px;
+        cursor: pointer;
+
+        path {
+          stroke: $marine;
+          opacity: 0.25;
+        }
+
+        &:hover path {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+/* The radio */
+.radio {
+  display: block;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background-color: $softWhite;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+span.text {
+  position: relative;
+  z-index: 5;
+}
+
+input:checked span.text {
+  color: $white;
+}
+
+/* Create a custom radio button */
+.checkround {
+  position: absolute;
+  @include dflex(center, center);
+  top: 0;
+  left: 0;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  background-color: $softWhite;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.radio input:checked ~ .checkround {
+  background-color: $marine;
+  color: $white;
+}
+
+/* Create a custom Check Symbol button */
+.checkv {
+  position: absolute;
+  @include dflex(center, center);
+  top: 0;
+  left: 0;
+  height: 40px;
+  width: 40px;
+  padding: 10px;
+  background-color: $softWhite;
+  border-radius: 50%;
+  z-index: 1;
+
+  &.red {
+    background-color: $red;
+  }
+  &.magenta {
+    background-color: $magenta;
+  }
+  &.purple {
+    background-color: $purple;
+  }
+}
+
+.checkv:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio input:checked ~ .checkv:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio .checkv:after {
+  left: 50%;
+  top: 45%;
+  width: 14px;
+  height: 8px;
+  border-bottom: 2px solid $marine;
+  border-left: 2px solid $marine;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}

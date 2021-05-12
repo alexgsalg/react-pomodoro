@@ -1,0 +1,122 @@
+.app {
+  @include dflex(space-between, center, column);
+  height: 100vh;
+  padding: 48px 40px;
+
+  &_header {
+    color: $text;
+  }
+}
+
+.selectors {
+  position: relative;
+  @include dflex(center, center);
+  background-color: $dark;
+  border-radius: 31.5px;
+  padding: 8px;
+  z-index: 99;
+}
+
+//Timer
+.timer {
+  width: 51vh;
+  height: 51vh;
+  padding: 22px;
+  border-radius: 50%;
+  background: linear-gradient(315deg, #2e325a 0%, #0e112a 100%);
+  box-shadow: -50px -50px 100px 0 #272c5a, 50px 50px 100px 0 #121530;
+
+  &_inner {
+    position: relative;
+    @include dflex(center, center);
+    width: 100%;
+    height: 100%;
+    background-color: $darkblue;
+    border-radius: 50%;
+  }
+
+  &__circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 13.5px;
+    z-index: 2;
+
+    path {
+      fill: var(--color);
+    }
+  }
+
+  &__counter {
+    position: relative;
+    padding-top: 1rem;
+    z-index: 5;
+
+    &_time {
+      pointer-events: none;
+      margin-bottom: 2vh;
+    }
+  }
+
+  &__action {
+    display: block;
+    margin: 0 auto;
+    padding: 5px 8px;
+    background-color: transparent;
+    border: none;
+    font-family: var(--font);
+    color: $text;
+
+    &:hover {
+      color: var(--color);
+    }
+  }
+}
+
+/* The radio */
+.switcher {
+  // @extend .selectors__btn;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: var(--font);
+  color: rgba($text, 0.4);
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+/* Hide the browser's default radio button */
+.switcher input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.switcher__bg {
+  // position: absolute;
+  @include dflex(center, center);
+  // top: 0;
+  // left: 0;
+  height: 100%;
+  width: 100%;
+  color: rgba($text, 0.5);
+  padding: 20px 25px;
+  background-color: transparent;
+  border-radius: 50px;
+  z-index: 1;
+
+  &:hover {
+    color: $text;
+  }
+}
+
+.switcher input:checked ~ .switcher__bg {
+  background-color: var(--color);
+  color: $marine;
+}

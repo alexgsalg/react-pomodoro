@@ -1,3 +1,8 @@
+# Pomodoro timer created using React.js and React hooks.
+
+Font, color and timer switchers are already funcional.
+Countdown still in progress.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

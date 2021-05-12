@@ -1,0 +1,67 @@
+//Kumbh Sans
+@import url("https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;700&display=swap");
+// font-family: 'Kumbh Sans', sans-serif;
+
+//Space Mono
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+// font-family: 'Space Mono', monospace;
+
+//Roboto Slab
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;700&display=swap");
+// font-family: 'Roboto Slab', serif;
+
+h1,
+h2,
+h3,
+h4,
+p {
+  font-family: var(--font);
+  color: $text;
+  margin: 0;
+}
+
+.text_1 {
+  font-weight: bold;
+  font-size: 13vh;
+  // font-size: 100px;
+  line-height: 120px;
+  letter-spacing: -5px;
+}
+
+.text_2 {
+  font-weight: bold;
+  font-size: 28px;
+  line-height: 34px;
+  color: inherit;
+}
+
+.text_3 {
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 16px;
+  letter-spacing: 15px;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.text_4 {
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.text_small {
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 14px;
+  mix-blend-mode: normal;
+}
+
+.text_accent {
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+}
