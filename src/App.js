@@ -6,13 +6,76 @@ import "./assets/sass/main.scss";
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const [isActive, setActive] = useState(false);
+
   const [isColor, setColor] = useState("#f87070");
   const [isFont, setFont] = useState("Kumbh Sans");
 
-  const [pomo, setPomo] = useState(25);
-  const [shortBreak, setShortBreak] = useState(8);
-  const [longBreak, setLongBreak] = useState(10);
+  const [pomo, setPomo] = useState(1500);
+  const [shortBreak, setShortBreak] = useState(480);
+  const [longBreak, setLongBreak] = useState(6);
   const [startedTime, setStartedTime] = useState(pomo);
+
+  const FULL_DASH_ARRAY = 283;
+
+  // Start with an initial value of 20 seconds
+  const TIME_LIMIT = startedTime;
+  let timePassed = 0;
+  let timeLeft = TIME_LIMIT;
+  let timerInterval = null;
+  // let remainingPathColor = COLOR_CODES.info.color;
+
+  function pauseTime() {
+    clearInterval(timerInterval);
+  }
+
+  function onTimesUp() {
+    clearInterval(timerInterval);
+  }
+
+  function startTimer() {
+    setActive(true);
+    timerInterval = setInterval(() => {
+      timePassed = timePassed += 1;
+      timeLeft = TIME_LIMIT - timePassed;
+      document.querySelector(".timer__counter_time").innerHTML = formatTime(
+        timeLeft
+      );
+      setCircleDasharray();
+
+      if (timeLeft === 0) {
+        onTimesUp();
+      }
+    }, 1000);
+  }
+
+  function formatTime(time) {
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+
+    return `${minutes}:${seconds}`;
+  }
+
+  function calculateTimeFraction() {
+    const rawTimeFraction = timeLeft / TIME_LIMIT;
+    return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+  }
+
+  function setCircleDasharray() {
+    const circleDasharray = `${(
+      calculateTimeFraction() * FULL_DASH_ARRAY
+    ).toFixed(0)} 283`;
+    document
+      .getElementById("base-timer-path-remaining")
+      .setAttribute("stroke-dasharray", circleDasharray);
+  }
 
   const handleModal = () => {
     setModalOpen(!isModalOpen);
@@ -50,6 +113,16 @@ function App() {
     setModalOpen(!isModalOpen);
   };
 
+  const handleStart = () => {
+    if (isActive) {
+      setActive(false);
+      pauseTime()
+
+    } else {
+      setActive(true)
+    }
+  }
+
   return (
     <div className="app">
       <header className="app_header">
@@ -72,20 +145,31 @@ function App() {
       </div>
 
       <div className="timer">
-        <div className="timer_inner">
-          <svg
-            className="timer__circle"
-            width="340"
-            height="340"
-            viewBox="0 0 340 340"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M29.536 75.1017C31.2387 72.5862 34.6582 71.9273 37.1737 73.63C39.6892 75.3327 40.3481 78.7522 38.6454 81.2677C21.048 107.265 11.5 137.913 11.5 170C11.5 257.537 82.4629 328.5 170 328.5C257.537 328.5 328.5 257.537 328.5 170C328.5 82.4629 257.537 11.5 170 11.5C166.962 11.5 164.5 9.03757 164.5 6C164.5 2.96243 166.962 0.5 170 0.5C263.612 0.5 339.5 76.3877 339.5 170C339.5 263.612 263.612 339.5 170 339.5C76.3877 339.5 0.5 263.612 0.5 170C0.5 135.698 10.716 102.905 29.536 75.1017Z" />
+        <div className="timer_inner base-timer">
+          <svg className="base-timer__svg " viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <g className="base-timer__circle">
+              <circle className="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+              <path
+                id="base-timer-path-remaining"
+                stroke-dasharray="283"
+                className="base-timer__path-remaining"
+                d="
+                  M 50, 50
+                  m -45, 0
+                  a 45,45 0 1,0 90,0
+                  a 45,45 0 1,0 -90,0
+                "
+              ></path>
+            </g>
           </svg>
+
+
           <div className="timer__counter">
-            <p className="text_1 timer__counter_time">{startedTime}:00</p>
-            <button className="timer__action text_3">Pause</button>
+            <p className="text_1 timer__counter_time">{formatTime(timeLeft)}</p>
+            {/* <p className="text_1 timer__counter_time">{startedTime}:{second < 10 ? `0${second}` : second}</p> */}
+
+            <button className="timer__action text_3" onClick={startTimer}>Start</button>
+            <button className="timer__action text_3" onClick={onTimesUp}>stop</button>
           </div>
         </div>
       </div>
