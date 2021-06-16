@@ -1,10 +1,10 @@
 # Pomodoro timer developed using React.js and React hooks.
 
 Pomodoro timer based on course's Figma file.
-![Pomodoro image](/src/assets/Pomodoro-react.png)
+![Pomodoro image](/src/assets/img/Pomodoro-react.png)
 
 Timer values, fonts and colors can be changed.
-![Pomodoro configs](/src/assets/Pomodoro-react_config.png)
+![Pomodoro configs](/src/assets/img/Pomodoro-react_config.png)
 
 # Getting Started with Create React App
 
