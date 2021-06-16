@@ -2,79 +2,93 @@ import React, { useState } from "react";
 
 import "./App.scss";
 import "./assets/sass/main.scss";
+import BreakAudio from './assets/sounds/breakTime.mp3'
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const [isActive, setActive] = useState(false);
 
   const [isColor, setColor] = useState("#f87070");
   const [isFont, setFont] = useState("Kumbh Sans");
 
   const [pomo, setPomo] = useState(1500);
-  const [shortBreak, setShortBreak] = useState(480);
-  const [longBreak, setLongBreak] = useState(6);
+  const [shortBreak, setShortBreak] = useState(300);
+  const [longBreak, setLongBreak] = useState(720);
   const [startedTime, setStartedTime] = useState(pomo);
+  const [isActive, setActive] = useState(false);
+  // const [onBreak, setOnBreak] = useState(false);
+  const breakAudio = new Audio(BreakAudio);
 
-  const FULL_DASH_ARRAY = 283;
-
-  // Start with an initial value of 20 seconds
-  const TIME_LIMIT = startedTime;
-  let timePassed = 0;
-  let timeLeft = TIME_LIMIT;
-  let timerInterval = null;
-  // let remainingPathColor = COLOR_CODES.info.color;
-
-  function pauseTime() {
-    clearInterval(timerInterval);
+  const playBreakSound = () => {
+    breakAudio.currentTime = 0;
+    breakAudio.play()
   }
 
-  function onTimesUp() {
-    clearInterval(timerInterval);
-  }
-
-  function startTimer() {
-    setActive(true);
-    timerInterval = setInterval(() => {
-      timePassed = timePassed += 1;
-      timeLeft = TIME_LIMIT - timePassed;
-      document.querySelector(".timer__counter_time").innerHTML = formatTime(
-        timeLeft
-      );
-      setCircleDasharray();
-
-      if (timeLeft === 0) {
-        onTimesUp();
-      }
-    }, 1000);
-  }
-
-  function formatTime(time) {
+  const formatTime = (time) => {
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
 
-    if (seconds < 10) {
-      seconds = `0${seconds}`;
-    }
-    if (minutes < 10) {
-      minutes = `0${minutes}`;
-    }
-
-    return `${minutes}:${seconds}`;
+    return (minutes < 10 ? `0${minutes}` : minutes) +
+      ":" + (seconds < 10 ? `0${seconds}` : seconds)
   }
 
-  function calculateTimeFraction() {
-    const rawTimeFraction = timeLeft / TIME_LIMIT;
-    return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
+  const controlTime = () => {
+    let second = 1000;
+    let date = new Date().getTime();
+    let nextDate = new Date().getTime() + second;
+    let onBreakVariable = false;
+    const pomoBtn = document.querySelector('.pomo');
+    const breakBtn = document.querySelector('.short_break');
+    const LongBreakBtn = document.querySelector('.long_break');
+    if (!isActive) {
+      let interval = setInterval(() => {
+        date = new Date().getTime();
+        if (date > nextDate) {
+          setStartedTime((prev) => {
+            let cycle = 1;
+            if (prev <= 0 && !onBreakVariable && cycle < 4) {
+              playBreakSound()
+              onBreakVariable = true;
+              breakBtn.checked = true;
+              cycle++
+              return shortBreak;
+            } else if (prev <= 0 && !onBreakVariable && cycle === 4) {
+              playBreakSound()
+              onBreakVariable = true;
+              LongBreakBtn.checked = true;
+              return longBreak;
+            } else if (prev <= 0 && onBreakVariable && cycle < 4) {
+              playBreakSound()
+              onBreakVariable = false;
+              pomoBtn.checked = true;
+              return pomo;
+            } else if (prev <= 0 && onBreakVariable && cycle === 4) {
+              playBreakSound()
+              onBreakVariable = false;
+              pomoBtn.checked = true;
+              return pomo;
+            }
+            return prev - 1
+          });
+          nextDate += second;
+          //Outline svg circle
+        }
+      }, 30);
+      localStorage.clear();
+      localStorage.setItem('interval-id', interval);
+    }
+    if (isActive) {
+      clearInterval(localStorage.getItem('interval-id'))
+    }
+    setActive(!isActive)
   }
 
-  function setCircleDasharray() {
-    const circleDasharray = `${(
-      calculateTimeFraction() * FULL_DASH_ARRAY
-    ).toFixed(0)} 283`;
-    document
-      .getElementById("base-timer-path-remaining")
-      .setAttribute("stroke-dasharray", circleDasharray);
+  const resetTime = () => {
+    setStartedTime(pomo);
+    const pomoBtn = document.querySelector('.pomo');
+    pomoBtn.checked = true;
+    clearInterval(localStorage.getItem('interval-id'))
+    setActive(!isActive)
   }
 
   const handleModal = () => {
@@ -113,15 +127,6 @@ function App() {
     setModalOpen(!isModalOpen);
   };
 
-  const handleStart = () => {
-    if (isActive) {
-      setActive(false);
-      pauseTime()
-
-    } else {
-      setActive(true)
-    }
-  }
 
   return (
     <div className="app">
@@ -131,45 +136,38 @@ function App() {
 
       <div className="selectors">
         <label className="switcher" onClick={handleTimeSwitcher}>
-          <input type="radio" defaultChecked name="timerPomo" value={pomo} />
+          <input type="radio" defaultChecked name="timerPomo" className="pomo" value={pomo} />
           <span className="switcher__bg">pomodoro</span>
         </label>
         <label className="switcher" onClick={handleTimeSwitcher}>
-          <input type="radio" name="timerPomo" value={shortBreak} />
+          <input type="radio" name="timerPomo" className="short_break" value={shortBreak} />
           <span className="switcher__bg">short break</span>
         </label>
         <label className="switcher" onClick={handleTimeSwitcher}>
-          <input type="radio" name="timerPomo" value={longBreak} />
+          <input type="radio" name="timerPomo" className="long_break" value={longBreak} />
           <span className="switcher__bg">long break</span>
         </label>
       </div>
 
       <div className="timer">
-        <div className="timer_inner base-timer">
-          <svg className="base-timer__svg " viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g className="base-timer__circle">
-              <circle className="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
-              <path
-                id="base-timer-path-remaining"
-                stroke-dasharray="283"
-                className="base-timer__path-remaining"
-                d="
-                  M 50, 50
-                  m -45, 0
-                  a 45,45 0 1,0 90,0
-                  a 45,45 0 1,0 -90,0
-                "
-              ></path>
-            </g>
+        <div className="timer_inner">
+          <svg className="track-outline timer__svg" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="226.5" cy="226.5" r="216.5" stroke="white" />
+          </svg>
+          <svg className="moving-outline timer__svg" width="400" height="400" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="226.5" cy="226.5" r="216.5" stroke="#018EBA" />
           </svg>
 
 
           <div className="timer__counter">
-            <p className="text_1 timer__counter_time">{formatTime(timeLeft)}</p>
-            {/* <p className="text_1 timer__counter_time">{startedTime}:{second < 10 ? `0${second}` : second}</p> */}
-
-            <button className="timer__action text_3" onClick={startTimer}>Start</button>
-            <button className="timer__action text_3" onClick={onTimesUp}>stop</button>
+            <p className="text_1 timer__counter_time">{formatTime(startedTime)}</p>
+            <div className="timer_actions">
+              <button className="timer__action text_3 timerPlay" onClick={controlTime}>
+                {isActive ? "Pause" : "Start"}
+              </button>
+              <span></span>
+              <button className="timer__action text_3 timerRestart" onClick={resetTime}>Reset</button>
+            </div>
           </div>
         </div>
       </div>
@@ -216,7 +214,7 @@ function App() {
                       name="pomodoro"
                       id="timer_pomo"
                       readOnly
-                      value={pomo}
+                      value={formatTime(pomo)}
                     />
                     <div className="content_time__arrows">
                       {/* Arrow UP */}
@@ -225,13 +223,13 @@ function App() {
                         width="14"
                         height="7"
                         onClick={() => {
-                          setPomo(pomo === 60 ? 60 : pomo + 5);
+                          setPomo(pomo === 60 ? 60 : pomo + 300);
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 6l6-4 6 4"
                         />
                       </svg>
@@ -241,13 +239,13 @@ function App() {
                         width="14"
                         height="7"
                         onClick={() => {
-                          setPomo(pomo === 0 ? 0 : pomo - 5);
+                          setPomo(pomo === 0 ? 0 : pomo - 300);
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 1l6 4 6-4"
                         />
                       </svg>
@@ -263,7 +261,7 @@ function App() {
                       name="shortBreak"
                       id="timer_short"
                       readOnly
-                      value={shortBreak}
+                      value={formatTime(shortBreak)}
                     />
                     {/* <p className="content_time__number">{shortBreak}</p> */}
                     <div className="content_time__arrows">
@@ -274,14 +272,14 @@ function App() {
                         height="7"
                         onClick={() => {
                           setShortBreak(
-                            shortBreak === 60 ? 60 : shortBreak + 2
+                            shortBreak === 60 ? 60 : shortBreak + 120
                           );
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 6l6-4 6 4"
                         />
                       </svg>
@@ -291,13 +289,13 @@ function App() {
                         width="14"
                         height="7"
                         onClick={() => {
-                          setShortBreak(shortBreak === 0 ? 0 : shortBreak - 2);
+                          setShortBreak(shortBreak === 0 ? 0 : shortBreak - 120);
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 1l6 4 6-4"
                         />
                       </svg>
@@ -313,7 +311,7 @@ function App() {
                       name="longBreak"
                       id="timer_long"
                       readOnly
-                      value={longBreak}
+                      value={formatTime(longBreak)}
                     />
                     {/* <p className="content_time__number">{longBreak}</p> */}
                     <div className="content_time__arrows">
@@ -323,13 +321,13 @@ function App() {
                         width="14"
                         height="7"
                         onClick={() => {
-                          setLongBreak(longBreak === 60 ? 60 : longBreak + 2);
+                          setLongBreak(longBreak === 60 ? 60 : longBreak + 120);
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 6l6-4 6 4"
                         />
                       </svg>
@@ -339,13 +337,13 @@ function App() {
                         width="14"
                         height="7"
                         onClick={() => {
-                          setLongBreak(longBreak === 0 ? 0 : longBreak - 2);
+                          setLongBreak(longBreak === 0 ? 0 : longBreak - 120);
                         }}
                       >
                         <path
                           fill="none"
                           opacity=".25"
-                          stroke-width="2"
+                          strokeWidth="2"
                           d="M1 1l6 4 6-4"
                         />
                       </svg>
